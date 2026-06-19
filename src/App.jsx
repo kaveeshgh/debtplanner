@@ -3,16 +3,15 @@ import debtImg from './assets/debt.png'
 import './App.css'
 import LoanInput from './components/input'
 import File from './components/file'
+import ResultsPage from './components/results'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [loans, setLoans] = useState([]);
+  const [done, setDone] = useState(false);
 
    return (
     <div>
-      <File />
-      <LoanInput />
-      <p>This is my app</p>
-      <button onClick={() => alert('clicked')}>Click me</button>
+      {done ? <ResultsPage loans={loans} /> : <File setLoans={setLoans} setDone={setDone} loans={loans} />}
     </div>
   )
 }
