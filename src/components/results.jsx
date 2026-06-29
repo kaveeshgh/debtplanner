@@ -1,16 +1,17 @@
 import { useState } from 'react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 function ResultsPage({ loans }) {
   const [results, setResults] = useState(null)
   const [mcResults, setMcResults] = useState(null)
+  const [timeline, setTimeline] = useState(null)
 
   const optimize = async () => {
     const response = await fetch("http://localhost:8000/optimize", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ loans, extra_payment: 100 })  // hardcoded $100/month extra for now
+      body: JSON.stringify({ loans, extra_payment: 100 })
     })
-
     const data = await response.json()
     setResults(data)
   }
@@ -21,9 +22,26 @@ function ResultsPage({ loans }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ loans, extra_payment: 100 })
     })
-
     const data = await response.json()
     setMcResults(data)
+  }
+
+  const runTimeline = async () => {
+    const response = await fetch("http://localhost:8000/timeline", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ loans, extra_payment: 100 })
+    })
+    const data = await response.json()
+
+    // merge avalanche + snowball into one array recharts can read
+    const merged = data.avalanche.map((point, i) => ({
+      month: point.month,
+      avalanche: point.balance,
+      snowball: data.snowball[i] ? data.snowball[i].balance : null
+    }))
+
+    setTimeline(merged)
   }
 
   return (
@@ -39,6 +57,7 @@ function ResultsPage({ loans }) {
 
       <button onClick={optimize}>Optimize</button>
       <button onClick={runMonteCarlo}>Run Monte Carlo</button>
+      <button onClick={runTimeline}>Show Graph</button>
 
       {results && (
         <div>
@@ -63,6 +82,22 @@ function ResultsPage({ loans }) {
           <p>Best case: {mcResults.snowball.best_case} months</p>
           <p>Median: {mcResults.snowball.median} months</p>
           <p>Worst case: {mcResults.snowball.worst_case} months</p>
+        </div>
+      )}
+
+      {timeline && (
+        <div style={{ width: '100%', height: 400 }}>
+          <ResponsiveContainer>
+            <LineChart data={timeline}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" label={{ value: 'Month', position: 'insideBottom', offset: -5 }} />
+              <YAxis label={{ value: 'Balance ($)', angle: -90, position: 'insideLeft' }} />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="avalanche" stroke="#8884d8" dot={false} />
+              <Line type="monotone" dataKey="snowball" stroke="#82ca9d" dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       )}
     </div>

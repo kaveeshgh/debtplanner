@@ -171,6 +171,52 @@ def simulate_payoff_monte_carlo(loans, order, extra_payment, trials=1000):
         "worst_case": payoff_months[int(n * 0.90)],  # 90th percentile
     }
 
+def simulate_payoff_timeline(loans, order, extra_payment):
+    balances = [float(l.principal.replace(",", "")) for l in loans]
+    rates = [float(l.interest_rate) / 100 / 12 for l in loans]
+    min_payments = [float(l.monthly_payment.replace(",", "")) for l in loans]
+
+    timeline = []
+    months = 0
+
+    while sum(balances) > 0 and months < 600:
+        months += 1
+        leftover_extra = extra_payment
+
+        for i in order:
+            if balances[i] <= 0:
+                continue
+            interest = balances[i] * rates[i]
+            balances[i] += interest
+            payment = min(min_payments[i], balances[i])
+            balances[i] -= payment
+
+        for i in order:
+            if balances[i] <= 0:
+                continue
+            pay = min(leftover_extra, balances[i])
+            balances[i] -= pay
+            leftover_extra -= pay
+            if leftover_extra <= 0:
+                break
+
+        timeline.append({"month": months, "balance": round(sum(balances), 2)})
+
+    return timeline
+
+
+@app.post("/timeline")
+async def timeline(request: OptimizeRequest):
+    loans = request.loans
+    extra = request.extra_payment
+
+    avalanche_order = sorted(range(len(loans)), key=lambda i: float(loans[i].interest_rate), reverse=True)
+    snowball_order = sorted(range(len(loans)), key=lambda i: float(loans[i].principal.replace(",", "")))
+
+    return {
+        "avalanche": simulate_payoff_timeline(loans, avalanche_order, extra),
+        "snowball": simulate_payoff_timeline(loans, snowball_order, extra)
+}
 
 @app.post("/monte-carlo")
 async def monte_carlo(request: OptimizeRequest):
