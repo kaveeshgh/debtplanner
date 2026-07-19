@@ -19,13 +19,11 @@ function File({ setLoans, setDone, loans, setMode }) {
     setLoans(prevLoans => [...prevLoans, info.loan]);
   }
 
-
   // Clears all loans and resets mode to null
   const goBack = () => {
     setLoans([]);
     setMode(null);
   }
-
 
   return (
     <div style={{ padding: '40px' }}>

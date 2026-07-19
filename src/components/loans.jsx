@@ -43,7 +43,6 @@ function LoanList({ loans, setLoans, editingIndex, setEditingIndex, editForm, se
     borderRadius: '4px'
   }
 
-
   return (
     <div>
       <h2 style={{ marginTop: '20px' }}>Your Loans</h2>

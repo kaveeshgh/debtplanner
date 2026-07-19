@@ -38,14 +38,11 @@ function MonteCarloTab({ loans, mcResults, setMcResults }) {
         slightly different. Some months income is higher, some months a surprise expense hits.
         The result is a <strong style={{ color: 'white' }}>range of payoff times</strong> rather than one fixed number.
       </p>
-
       <button onClick={runMonteCarlo} disabled={loading}>
         {loading ? 'Running 1,000 simulations...' : 'Run Monte Carlo'}
       </button>
-
       {mcResults && (
         <div style={{ marginTop: '24px' }}>
-
           {/* result cards */}
           <div style={{ display: 'flex', gap: '20px', marginBottom: '30px', flexWrap: 'wrap' }}>
             <div style={loanBoxStyle}>
@@ -57,7 +54,6 @@ function MonteCarloTab({ loans, mcResults, setMcResults }) {
               <p>Median: <strong>{mcResults.avalanche.median} months</strong> ({(mcResults.avalanche.median / 12).toFixed(1)} years)</p>
               <p>Worst case: <strong>{mcResults.avalanche.worst_case} months</strong> ({(mcResults.avalanche.worst_case / 12).toFixed(1)} years)</p>
             </div>
-
             <div style={loanBoxStyle}>
               <p style={{ fontWeight: 'bold', marginBottom: '12px', color: '#82ca9d' }}>Snowball Strategy</p>
               <p style={{ color: '#aaa', fontSize: '0.85rem', marginBottom: '10px' }}>
@@ -67,7 +63,6 @@ function MonteCarloTab({ loans, mcResults, setMcResults }) {
               <p>Median: <strong>{mcResults.snowball.median} months</strong> ({(mcResults.snowball.median / 12).toFixed(1)} years)</p>
               <p>Worst case: <strong>{mcResults.snowball.worst_case} months</strong> ({(mcResults.snowball.worst_case / 12).toFixed(1)} years)</p>
             </div>
-
             <div style={{ ...loanBoxStyle, borderColor: '#666' }}>
               <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>What does this mean?</p>
               <p style={{ color: '#aaa', fontSize: '0.85rem', lineHeight: '1.6' }}>
@@ -76,7 +71,6 @@ function MonteCarloTab({ loans, mcResults, setMcResults }) {
               </p>
             </div>
           </div>
-
           {/* matplotlib chart from Python */}
           {chartImg && (
             <div>

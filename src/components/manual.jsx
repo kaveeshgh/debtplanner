@@ -15,12 +15,10 @@ function Manual({ setLoans, setDone, loans, setMode }) {
 
   // Checkes if necessary fields are filled
   const addLoan = () => {
-
       setLoans(prevLoans => [
           ...prevLoans,
           form
       ])
-
       setForm({
           principal:'',
           interest_rate:'',
@@ -29,19 +27,17 @@ function Manual({ setLoans, setDone, loans, setMode }) {
       })
   }
 
-
   // Clears all loans and resets mode to null
   const goBack = () => {
     setLoans([]);
     setMode(null);
   }
 
-  
   return (
     <div style={{ padding: '40px' }}>
       <button onClick={goBack}>← Back</button>
       <h2>Enter Loan Details</h2>
-    
+  
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '400px' }}>
         <label>Principal ($)
           <input name="principal" value={form.principal} onChange={handleChange} placeholder="e.g. 20000" />
@@ -57,9 +53,7 @@ function Manual({ setLoans, setDone, loans, setMode }) {
         </label>
         <button onClick={addLoan}>Add Loan</button>
       </div>
-
       <p>{loans.length} loan(s) added</p>
-
       {loans.length > 0 && (
         <div>
           {loans.map((loan, i) => (
