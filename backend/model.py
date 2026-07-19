@@ -1,15 +1,47 @@
-# Imports BaseModel from Pydantic
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
-# Defines the shape of a Loan object
+
 class Loan(BaseModel):
     principal: str
     interest_rate: str
     monthly_payment: str
-    maturity_date: str
+    maturity_date: str = ""
 
-# The shape of the request body for optimize/monte-carlo/timeline/schedule endpoints
+    @field_validator("principal")
+    @classmethod
+    def validate_principal(cls, value):
+        clean = value.replace(",", "").replace("$", "")
+
+        if float(clean) <= 0:
+            raise ValueError("Principal must be greater than zero")
+
+        return value
+
+
+    @field_validator("interest_rate")
+    @classmethod
+    def validate_interest_rate(cls, value):
+        rate = float(value.replace("%", ""))
+
+        if rate < 0:
+            raise ValueError("Interest rate cannot be negative")
+
+        return value
+
+
+    @field_validator("monthly_payment")
+    @classmethod
+    def validate_payment(cls, value):
+        clean = value.replace(",", "").replace("$", "")
+
+        if float(clean) <= 0:
+            raise ValueError("Monthly payment must be greater than zero")
+
+        return value
+
+
+
 class OptimizeRequest(BaseModel):
     loans: list[Loan]
-    extra_payment: float = 0
+    extra_payment: float = 100
     

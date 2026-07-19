@@ -20,7 +20,9 @@ function ScheduleTab({ loans, schedule, setSchedule }) {
     const res = await fetch("http://localhost:8000/analyze/schedule", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ loans, extra_payment: 100 })
+      body: JSON.stringify({
+          loans
+      })
     })
 
     const data = await res.json()

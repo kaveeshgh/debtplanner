@@ -15,15 +15,18 @@ function Manual({ setLoans, setDone, loans, setMode }) {
 
   // Checkes if necessary fields are filled
   const addLoan = () => {
-    if (!form.principal || !form.interest_rate || !form.monthly_payment) {
-      alert('Please fill in at least principal, interest rate, and monthly payment')
-      return
-    }
 
-    // Make a new loan
-    setLoans(prevLoans => [...prevLoans, form])
-    // Reset fields
-    setForm({ principal: '', interest_rate: '', monthly_payment: '', maturity_date: '' })
+      setLoans(prevLoans => [
+          ...prevLoans,
+          form
+      ])
+
+      setForm({
+          principal:'',
+          interest_rate:'',
+          monthly_payment:'',
+          maturity_date:''
+      })
   }
 
 

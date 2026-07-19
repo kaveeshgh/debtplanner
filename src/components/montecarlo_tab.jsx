@@ -20,7 +20,9 @@ function MonteCarloTab({ loans, mcResults, setMcResults }) {
     const res = await fetch("http://localhost:8000/analyze/monte-carlo", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ loans, extra_payment: 100 })
+      body: JSON.stringify({
+        loans
+      })
     })
 
     const data = await res.json()
