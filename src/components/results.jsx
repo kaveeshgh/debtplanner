@@ -1,105 +1,56 @@
+// Imports the four sub-components 
 import { useState } from 'react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import LoanList from './loans'
+import OptimizeTab from './optimize_tab'
+import MonteCarloTab from './montecarlo_tab'
+import ScheduleTab from './schedule_tab'
 
-function ResultsPage({ loans }) {
+
+function ResultsPage({ loans, setLoans, setDone, setMode }) {
+  // Controls which tab is active
+  const [tab, setTab] = useState('optimize')
+  // Variables for each endpoint's response (mc = monte carlo)
   const [results, setResults] = useState(null)
   const [mcResults, setMcResults] = useState(null)
   const [timeline, setTimeline] = useState(null)
+  const [schedule, setSchedule] = useState(null)
+  // Tracks which loan is being edited (null = none) and holds the in-progress edit values
+  const [editingIndex, setEditingIndex] = useState(null)
+  const [editForm, setEditForm] = useState({})
 
-  const optimize = async () => {
-    const response = await fetch("http://localhost:8000/optimize", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ loans, extra_payment: 100 })
-    })
-    const data = await response.json()
-    setResults(data)
+  // Resets both flags, returning to the landing page
+  const goBack = () => {
+    setDone(false)
+    setMode(null)
   }
 
-  const runMonteCarlo = async () => {
-    const response = await fetch("http://localhost:8000/monte-carlo", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ loans, extra_payment: 100 })
-    })
-    const data = await response.json()
-    setMcResults(data)
-  }
-
-  const runTimeline = async () => {
-    const response = await fetch("http://localhost:8000/timeline", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ loans, extra_payment: 100 })
-    })
-    const data = await response.json()
-
-    // merge avalanche + snowball into one array recharts can read
-    const merged = data.avalanche.map((point, i) => ({
-      month: point.month,
-      avalanche: point.balance,
-      snowball: data.snowball[i] ? data.snowball[i].balance : null
-    }))
-
-    setTimeline(merged)
-  }
 
   return (
-    <div>
-      {loans.map((loan, index) => (
-        <div key={index}>
-          <p><br />Principal: {loan.principal}</p>
-          <p>Interest Rate: {loan.interest_rate}</p>
-          <p>Monthly Payment: {loan.monthly_payment}</p>
-          <p>Maturity Date: {loan.maturity_date}</p>
-        </div>
-      ))}
+    <div style={{ padding: '40px', backgroundColor: '#111', minHeight: '100vh', color: 'white' }}>
 
-      <button onClick={optimize}>Optimize</button>
-      <button onClick={runMonteCarlo}>Run Monte Carlo</button>
-      <button onClick={runTimeline}>Show Graph</button>
+      <button onClick={goBack}>← Back</button>
 
-      {results && (
-        <div>
-          <h2>Avalanche</h2>
-          <p>Months to payoff: {results.avalanche.months}</p>
-          <p>Total interest paid: ${results.avalanche.total_interest}</p>
+      <LoanList
+        loans={loans}
+        setLoans={setLoans}
+        editingIndex={editingIndex}
+        setEditingIndex={setEditingIndex}
+        editForm={editForm}
+        setEditForm={setEditForm}
+        setResults={setResults}
+        setTimeline={setTimeline}
+      />
 
-          <h2>Snowball</h2>
-          <p>Months to payoff: {results.snowball.months}</p>
-          <p>Total interest paid: ${results.snowball.total_interest}</p>
-        </div>
-      )}
+      <div style={{ display: 'flex', gap: '10px', margin: '30px 0 20px' }}>
+        <button onClick={() => setTab('optimize')} style={{ fontWeight: tab === 'optimize' ? 'bold' : 'normal' }}>Optimize</button>
+        <button onClick={() => setTab('montecarlo')} style={{ fontWeight: tab === 'montecarlo' ? 'bold' : 'normal' }}>Monte Carlo</button>
+        <button onClick={() => setTab('schedule')} style={{ fontWeight: tab === 'schedule' ? 'bold' : 'normal' }}>Schedule</button>
+      </div>
 
-      {mcResults && (
-        <div>
-          <h2>Monte Carlo — Avalanche</h2>
-          <p>Best case: {mcResults.avalanche.best_case} months</p>
-          <p>Median: {mcResults.avalanche.median} months</p>
-          <p>Worst case: {mcResults.avalanche.worst_case} months</p>
+      {tab === 'optimize' && <OptimizeTab loans={loans} results={results} setResults={setResults} timeline={timeline} setTimeline={setTimeline} />}
+      {tab === 'montecarlo' && <MonteCarloTab loans={loans} mcResults={mcResults} setMcResults={setMcResults} />}
+      {tab === 'schedule' && <ScheduleTab loans={loans} schedule={schedule} setSchedule={setSchedule} />}
 
-          <h2>Monte Carlo — Snowball</h2>
-          <p>Best case: {mcResults.snowball.best_case} months</p>
-          <p>Median: {mcResults.snowball.median} months</p>
-          <p>Worst case: {mcResults.snowball.worst_case} months</p>
-        </div>
-      )}
-
-      {timeline && (
-        <div style={{ width: '100%', height: 400 }}>
-          <ResponsiveContainer>
-            <LineChart data={timeline}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" label={{ value: 'Month', position: 'insideBottom', offset: -5 }} />
-              <YAxis label={{ value: 'Balance ($)', angle: -90, position: 'insideLeft' }} />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="avalanche" stroke="#8884d8" dot={false} />
-              <Line type="monotone" dataKey="snowball" stroke="#82ca9d" dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
     </div>
   )
 }
