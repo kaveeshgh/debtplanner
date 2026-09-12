@@ -1,15 +1,16 @@
 # Imports NumPy and Pandas
 import numpy as np
 import pandas as pd
+from helpers import clean_money
 
 
 def simulate_payoff(loans, order, extra_payment):
     # For every loan, strip commas from the principal string then convert to float
-    balances = [float(l.principal.replace(",", "")) for l in loans]
+    balances = [clean_money(l.principal) for l in loans]
     # Converts annual percentage to monthly decimal rate
-    rates = [float(l.interest_rate) / 100 / 12 for l in loans]
+    rates = [clean_money(l.interest_rate) / 100 / 12 for l in loans]
     # Same as balances
-    min_payments = [float(l.monthly_payment.replace(",", "")) for l in loans]
+    min_payments = [clean_money(l.minimum_payment) for l in loans]
 
     # Counters
     months = 0
@@ -54,9 +55,9 @@ def simulate_payoff(loans, order, extra_payment):
 def simulate_payoff_monte_carlo(loans, order, extra_payment, trials=1000):
     # Same extraction as simulate_payoff but wrapped in np.array()
     # Converts Python lists to NumPy arrays
-    balances_init = np.array([float(l.principal.replace(",", "")) for l in loans])
-    rates = np.array([float(l.interest_rate) / 100 / 12 for l in loans])
-    min_payments = np.array([float(l.monthly_payment.replace(",", "")) for l in loans])
+    balances_init = np.array([clean_money(l.principal) for l in loans])
+    rates = np.array([clean_money(l.interest_rate) / 100 / 12 for l in loans])
+    min_payments = np.array([clean_money(l.minimum_payment) for l in loans])
 
     # Every row is one trial, every column is one loan
     balances = np.tile(balances_init, (trials, 1))
@@ -115,9 +116,9 @@ def simulate_payoff_monte_carlo(loans, order, extra_payment, trials=1000):
 
 # Basically same as simulate_payoff except instead of just tracking totals, it records a snapshot every month
 def simulate_payoff_timeline(loans, order, extra_payment):
-    balances = [float(l.principal.replace(",", "")) for l in loans]
-    rates = [float(l.interest_rate) / 100 / 12 for l in loans]
-    min_payments = [float(l.monthly_payment.replace(",", "")) for l in loans]
+    balances = [clean_money(l.principal) for l in loans]
+    rates = [clean_money(l.interest_rate) / 100 / 12 for l in loans]
+    min_payments = [clean_money(l.minimum_payment) for l in loans]
 
     timeline = []
     months = 0
@@ -152,9 +153,9 @@ def simulate_payoff_timeline(loans, order, extra_payment):
 
 # Tracks every loan individually each month
 def build_amortization_schedule(loans, order, extra_payment):
-    balances = [float(l.principal.replace(",", "")) for l in loans]
-    rates = [float(l.interest_rate) / 100 / 12 for l in loans]
-    min_payments = [float(l.monthly_payment.replace(",", "")) for l in loans]
+    balances = [clean_money(l.principal) for l in loans]
+    rates = [clean_money(l.interest_rate) / 100 / 12 for l in loans]
+    min_payments = [clean_money(l.minimum_payment) for l in loans]
     names = [f"Loan {i+1}" for i in range(len(loans))]
 
     # Each element is one month's data

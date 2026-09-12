@@ -1,16 +1,12 @@
+# Converts financial string values into floats
 def clean_money(value):
-    """
-    Converts strings like:
-    "$20,000"
-    "20,000"
-
-    into:
-    20000.0
-    """
     return float(
-        value
-        .replace("$", "")
-        .replace(",", "")
+        value.replace("$", "")
+            .replace("€", "")
+            .replace("£", "")
+            .replace("%", "")
+            .replace(",", "")
+            .replace(" ", "")
     )
 
 

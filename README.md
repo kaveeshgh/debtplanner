@@ -4,8 +4,15 @@ Debt Planner is a full-stack application designed to help people better understa
 The project uses a **React frontend** and a **Python FastAPI backend**. Python handles the financial logic, loan calculations, simulations, PDF extraction, and chart generation, while React provides the interactive interface where users can view and explore their results.
 <img width="1875" height="959" alt="image" src="https://github.com/user-attachments/assets/db4e548e-94e7-485e-b99f-76dc7e15ff9e" />
 <img width="1824" height="735" alt="image" src="https://github.com/user-attachments/assets/cc9726ea-f0b6-498e-8848-41e43ae762e0" />
-<img width="1479" height="429" alt="image" src="https://github.com/user-attachments/assets/d0febf91-ab2b-454e-9432-8e80b248910e" />
-<img width="1856" height="944" alt="image" src="https://github.com/user-attachments/assets/4da1e24a-c869-44eb-be17-904902df717b" />
+
+
+How to run:
+In main folder do "npm run dev"
+Then in another terminal "cd backend"
+Then "python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install fastapi uvicorn pydantic pdfplumber numpy pandas matplotlib python-multipart" 
+Then do "uvicorn main:app --reload"
 
 ---
 # Features

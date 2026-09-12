@@ -19,11 +19,7 @@ def get_loan_info(text):
     # Same as principal part
     payment = re.search(r'monthly installments of \$([\d,]+\.?\d*)', text)
     if payment:
-        loan['monthly_payment'] = payment.group(1)
+        loan['minimum_payment'] = payment.group(1)
 
-    # Same as principal part
-    maturity = re.search(r'due and payable on (\w+ \d+, \d+)\s*\(the\s*["\u201c\u201d]Maturity Date["\u201c\u201d]\)', text)
-    if maturity:
-        loan['maturity_date'] = maturity.group(1)
 
     return loan

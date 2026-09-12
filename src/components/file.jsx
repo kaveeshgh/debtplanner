@@ -26,7 +26,7 @@ function File({ setLoans, setDone, loans, setMode }) {
   }
 
   return (
-    <div style={{ padding: '40px' }}>
+    <div style={{ padding: '40px', backgroundColor: 'white' }}>
       <button onClick={goBack}>← Back</button>
       <h2>Upload Loan PDFs</h2>
       <input type="file" onChange={getFile} />

@@ -34,7 +34,7 @@ function App() {
       <p style={{ color: 'grey', marginBottom: '30px' }}>Choose how to add your loans</p>
 
       <button onClick={() => setMode('pdf')} style={{ padding: '15px 40px', fontSize: '1rem', cursor: 'pointer' }}>
-        Upload PDF
+        Upload PDF (Loan Only)
       </button>
       <button onClick={() => setMode('manual')} style={{ padding: '15px 40px', fontSize: '1rem', cursor: 'pointer' }}>
         Enter Manually

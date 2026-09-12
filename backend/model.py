@@ -1,16 +1,17 @@
 from pydantic import BaseModel, field_validator
+from helpers import clean_money
 
-
-class Loan(BaseModel):
+class Debt(BaseModel):
+    name: str = ""
+    type: str = ""
     principal: str
     interest_rate: str
-    monthly_payment: str
-    maturity_date: str = ""
+    minimum_payment: str
 
     @field_validator("principal")
     @classmethod
     def validate_principal(cls, value):
-        clean = value.replace(",", "").replace("$", "")
+        clean = clean_money(value)
 
         if float(clean) <= 0:
             raise ValueError("Principal must be greater than zero")
@@ -21,7 +22,7 @@ class Loan(BaseModel):
     @field_validator("interest_rate")
     @classmethod
     def validate_interest_rate(cls, value):
-        rate = float(value.replace("%", ""))
+        rate = clean_money(value)
 
         if rate < 0:
             raise ValueError("Interest rate cannot be negative")
@@ -29,19 +30,19 @@ class Loan(BaseModel):
         return value
 
 
-    @field_validator("monthly_payment")
+    @field_validator("minimum_payment")
     @classmethod
     def validate_payment(cls, value):
-        clean = value.replace(",", "").replace("$", "")
+        clean = clean_money(value)
 
         if float(clean) <= 0:
-            raise ValueError("Monthly payment must be greater than zero")
+            raise ValueError("Minimum payment must be greater than zero")
 
         return value
 
 
 
 class OptimizeRequest(BaseModel):
-    loans: list[Loan]
+    loans: list[Debt]
     extra_payment: float = 100
     

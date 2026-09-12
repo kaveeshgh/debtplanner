@@ -51,17 +51,20 @@ function LoanList({ loans, setLoans, editingIndex, setEditingIndex, editForm, se
           {editingIndex === index ? (
             <div>
               <p style={{ fontWeight: 'bold', marginBottom: '10px' }}>Editing Loan {index + 1}</p>
+              <label>Name
+                <input style={inputStyle} value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
+              </label>
+              <label>Type
+                <input style={inputStyle} value={editForm.type} onChange={e => setEditForm({ ...editForm, type: e.target.value })} />
+              </label>
               <label>Principal ($)
                 <input style={inputStyle} value={editForm.principal} onChange={e => setEditForm({ ...editForm, principal: e.target.value })} />
               </label>
               <label>Interest Rate (%)
                 <input style={inputStyle} value={editForm.interest_rate} onChange={e => setEditForm({ ...editForm, interest_rate: e.target.value })} />
               </label>
-              <label>Monthly Payment ($)
-                <input style={inputStyle} value={editForm.monthly_payment} onChange={e => setEditForm({ ...editForm, monthly_payment: e.target.value })} />
-              </label>
-              <label>Maturity Date
-                <input style={inputStyle} value={editForm.maturity_date} onChange={e => setEditForm({ ...editForm, maturity_date: e.target.value })} />
+              <label>Minimum Payment ($)
+                <input style={inputStyle} value={editForm.minimum_payment} onChange={e => setEditForm({ ...editForm, minimum_payment: e.target.value })} />
               </label>
               <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                 <button onClick={saveEdit}>Save</button>
@@ -71,10 +74,11 @@ function LoanList({ loans, setLoans, editingIndex, setEditingIndex, editForm, se
           ) : (
             <div>
               <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>Loan {index + 1}</p>
+              <p>Name: {loan.name || 'N/A'}</p>
+              <p>Type: {loan.type || 'N/A'}</p>
               <p>Principal: ${loan.principal}</p>
               <p>Interest Rate: {loan.interest_rate}%</p>
-              <p>Monthly Payment: ${loan.monthly_payment}</p>
-              <p>Maturity Date: {loan.maturity_date || 'N/A'}</p>
+              <p>Minimum Payment: ${loan.minimum_payment}</p>
               <button onClick={() => startEdit(index)} style={{ marginTop: '10px' }}>Edit</button>
             </div>
           )}

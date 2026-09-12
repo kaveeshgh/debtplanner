@@ -3,10 +3,11 @@ import { useState } from 'react'
 function Manual({ setLoans, setDone, loans, setMode }) {
   // Local state for the form fields
   const [form, setForm] = useState({
+    name: '',
+    type: '',
     principal: '',
     interest_rate: '',
-    monthly_payment: '',
-    maturity_date: ''
+    minimum_payment: ''
   })
 
   const handleChange = (e) => {
@@ -20,10 +21,11 @@ function Manual({ setLoans, setDone, loans, setMode }) {
           form
       ])
       setForm({
-          principal:'',
-          interest_rate:'',
-          monthly_payment:'',
-          maturity_date:''
+        name: '',
+        type: '',
+        principal: '',
+        interest_rate: '',
+        minimum_payment: ''
       })
   }
 
@@ -39,17 +41,20 @@ function Manual({ setLoans, setDone, loans, setMode }) {
       <h2>Enter Loan Details</h2>
   
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '400px' }}>
+        <label>Name (optional)
+          <input name="name" value={form.name} onChange={handleChange} placeholder="e.g RBC Rewards Visa" />
+        </label>
+        <label>Type (optional)
+          <input name="type" value={form.type} onChange={handleChange} placeholder="e.g Credit Card" />
+        </label>
         <label>Principal ($)
           <input name="principal" value={form.principal} onChange={handleChange} placeholder="e.g. 20000" />
         </label>
-        <label>Interest Rate (%)
+        <label>Interest Rate/APR (%)
           <input name="interest_rate" value={form.interest_rate} onChange={handleChange} placeholder="e.g. 5.5" />
         </label>
-        <label>Monthly Payment ($)
-          <input name="monthly_payment" value={form.monthly_payment} onChange={handleChange} placeholder="e.g. 400" />
-        </label>
-        <label>Maturity Date (optional)
-          <input name="maturity_date" value={form.maturity_date} onChange={handleChange} placeholder="e.g. January 1, 2030" />
+        <label>Minimum Payment ($)
+          <input name="minimum_payment" value={form.minimum_payment} onChange={handleChange} placeholder="e.g. 400" />
         </label>
         <button onClick={addLoan}>Add Loan</button>
       </div>
