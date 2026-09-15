@@ -161,3 +161,5 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 backend/__pycache__
+backend/.pytest_cache
+backend/tests/__pycache__
